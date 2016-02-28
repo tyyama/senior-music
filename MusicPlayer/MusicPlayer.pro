@@ -24,3 +24,12 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     resources.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/taglib/lib/release/ -ltaglib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/taglib/lib/debug/ -ltaglib
+else:unix: LIBS += -L$$PWD/taglib/lib/ -ltaglib
+
+INCLUDEPATH += $$PWD/taglib/lib/release
+DEPENDPATH += $$PWD/taglib/lib/release
+
+CONFIG += c++11
