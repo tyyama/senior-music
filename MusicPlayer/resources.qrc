@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>icons/1455426565_Play1Pressed.png</file>
+        <file>icons/1455426593_PauseHot.png</file>
+        <file>icons/1455426608_Stop1Normal.png</file>
+        <file>icons/1455426565_Folder.png</file>
+        <file>icons/Exit.png</file>
+    </qresource>
+</RCC>
