@@ -2,4 +2,4 @@
 CSS 360 Project: music player for senior citizens
 
 
-To invoke file parser from c++ use the following:  std::system("java -jar File_Parser.jar C:\[whatever path to music directory]\"). Please ensure the File_parser.jar is in the same folder as the compiled binary, or I'm pretty sure it won't run.
+New code for the player adds a settings window and rough file parser integration. Make sure to copy File_Parser.jar and parser.bat to the root build folder before running. If you encouter errors then from the build menu go to Build -> clean all, then Build -> Run qmake. After this everything should run fine.
