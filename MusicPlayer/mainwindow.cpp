@@ -9,9 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     player = new QMediaPlayer(this);
-    vw = new QVideoWidget(this);
-    player->setVideoOutput(vw);
-    this->setCentralWidget(vw);
+    //vw = new QVideoWidget(this);
+    //player->setVideoOutput(vw);
+    //this->setCentralWidget(vw);
     //QWidget::showFullScreen();
 
     slider = new QSlider(this);
