@@ -1,6 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "settings.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /*connect(player, &QMediaPlayer::durationChanged,bar,&QProgressBar::setMaximum);
     connect(player, &QMediaPlayer::durationChanged,bar,&QProgressBar::setValue);*/
+
+    refresh_music();
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +62,6 @@ void MainWindow::on_actionPlay_triggered()
 void MainWindow::on_actionPause_triggered()
 {
   player->pause();
-  std::system("parse.bat C:\\Users\\Vocaloid\\Music\\");
   ui->statusBar->showMessage("Paused");
 
 }
@@ -96,4 +104,55 @@ void MainWindow::on_actionSettings_triggered()
     Settings settings;
     settings.setModal(true);
     settings.exec();
+}
+
+void MainWindow::refresh_music() {
+    // get potential music locations
+    string fileLocations = "";
+    fileLocations.append("\"D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\"");
+    //fileLocations.append(" ");
+    //fileLocations.append("C:\\Users\\Vocaloid\\Music");
+
+    // structure command for std::system (may take more than one argument later)
+    char command[500] = "parse.bat ";
+    int curIndex = 10;
+
+    int fileLocationsSize = fileLocations.size();
+    for (int i = 0; i <= fileLocationsSize; i++) {
+        command[curIndex] = fileLocations[i];
+        curIndex++;
+    }
+
+    cout << command << endl;
+    system(command);
+
+    // check if the file has been created
+    ifstream infile("Songs.dat");
+    bool fileExists = infile.good();
+    int count = 0;
+    while (!fileExists) {
+        ifstream infile("Songs.dat");
+        fileExists = infile.good();
+        cerr << "ran" << count << endl;
+        count++;
+    }
+
+    // loops through output file from parse.bat
+    get_metadata();
+}
+
+void MainWindow::get_metadata() {
+    ifstream infile("Songs.dat");
+    ofstream cachefile;
+    cachefile.open("cached.dat");
+
+    // this section will do the actual metadata parsing
+    for (string line; getline(infile, line); ) {
+            cout << line << endl;
+            cachefile << line << "\n";
+    }
+
+    cachefile.close();
+    infile.close();
+    remove("Songs.dat");
 }

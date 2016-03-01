@@ -30,6 +30,10 @@ private slots:
 
     void on_actionStop_triggered();
 
+    void refresh_music();
+
+    void get_metadata();
+
     //void on_actionExit_triggered();
 
     /*void on_sliderProgress_sliderMoved(int position);
