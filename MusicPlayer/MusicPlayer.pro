@@ -31,8 +31,19 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/taglib/lib/release/ -ltagl
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/taglib/lib/debug/ -ltaglib_d
 else:unix: LIBS += -L$$PWD/taglib/lib/ taglib
 
-INCLUDEPATH += $$PWD/taglib/lib/release
-DEPENDPATH += $$PWD/taglib/lib/release
+INCLUDEPATH += $$PWD/taglib/include/
+INCLUDEPATH += $$PWD/taglib/include/ape/
+INCLUDEPATH += $$PWD/taglib/include/flac/
+INCLUDEPATH += $$PWD/taglib/include/mpc/
+INCLUDEPATH += $$PWD/taglib/include/mpeg/
+INCLUDEPATH += $$PWD/taglib/include/mpeg/id3v1/
+INCLUDEPATH += $$PWD/taglib/include/mpeg/id3v2/
+INCLUDEPATH += $$PWD/taglib/include/mpeg/id3v2/frames/
+INCLUDEPATH += $$PWD/taglib/include/ogg/
+INCLUDEPATH += $$PWD/taglib/include/ogg/flac/
+INCLUDEPATH += $$PWD/taglib/include/ogg/vorbis/
+INCLUDEPATH += $$PWD/taglib/include/toolkit/
 
+DEPENDPATH += $$PWD/taglib/include/
 
 CONFIG += c++11

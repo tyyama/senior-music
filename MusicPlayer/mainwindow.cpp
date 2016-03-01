@@ -5,6 +5,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <id3v2frame.h>
+#include <id3v2header.h>
+#include <attachedpictureframe.h>
+#include <cstdio>
 
 
 using namespace std;
