@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     settings.cpp \
-    song.cpp
+    song.cpp \
+    fileparser.cpp
 
 HEADERS  += mainwindow.h \
     settings.h \
-    song.h
+    song.h \
+    fileparser.h
 
 FORMS    += mainwindow.ui \
     settings.ui
@@ -44,6 +46,8 @@ INCLUDEPATH += $$PWD/taglib/include/ogg/flac/
 INCLUDEPATH += $$PWD/taglib/include/ogg/vorbis/
 INCLUDEPATH += $$PWD/taglib/include/toolkit/
 
-DEPENDPATH += $$PWD/taglib/include/
+#DEPENDPATH += $$PWD/taglib/include/
+DEFINES -= UNICODE
+DEFINES += _MBCS
 
 CONFIG += c++11

@@ -5,12 +5,14 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <id3v2tag.h>
+#include "fileparser.h"
+#include "song.h"
+/*#include <id3v2tag.h>
 #include <mpegfile.h>
 #include <id3v2frame.h>
 #include <id3v2header.h>
 #include <attachedpictureframe.h>
-#include <cstdio>
+#include <cstdio>*/
 
 
 using namespace std;
@@ -113,10 +115,28 @@ void MainWindow::on_actionSettings_triggered()
 }
 
 void MainWindow::refresh_music() {
+    FileParser fp;
+    string filePath = "D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys";//\\El Camino";
+    //string filePath = "test";
+    cerr << "****" << endl;
+    vector<Song> songs;
+    vector<string> songPaths = fp.parse(filePath);
+
+    for (vector<string>::iterator it = songPaths.begin(); it < songPaths.end(); ++it) {
+        Song song("", "", "", *it);
+        songs.push_back(song);
+        cerr << *it << endl;
+    }
+    cerr << "****" << endl;
+
+    for (vector<Song>::iterator it = songs.begin(); it < songs.end(); ++it) {
+        cerr << (*it).filePath << endl;
+    }
+
+
     // get potential music locations
-    string fileLocations = "";
+    /*string fileLocations = "";
     fileLocations.append("\"D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\"");
-    //fileLocations.append(" ");
     //fileLocations.append("C:\\Users\\Vocaloid\\Music");
 
     // structure command for std::system (may take more than one argument later)
@@ -129,14 +149,15 @@ void MainWindow::refresh_music() {
         curIndex++;
     }
 
-    cout << command << endl;
+    cerr << command << endl;
     system(command);
 
     // check if the file has been created
     ifstream infile("Songs.dat");
     bool fileExists = infile.good();
     int count = 0;
-    while (!fileExists) {
+    while (fileExists != 1) {
+        infile.close();
         ifstream infile("Songs.dat");
         fileExists = infile.good();
         cerr << "ran" << count << endl;
@@ -144,21 +165,19 @@ void MainWindow::refresh_music() {
     }
 
     // loops through output file from parse.bat
-    get_metadata();
+    cerr << infile.good() << endl;
+    infile.close();
+    get_metadata();*/
 }
 
-void MainWindow::get_metadata() {
-    ifstream infile("Songs.dat");
-    ofstream cachefile;
-    cachefile.open("cached.dat");
+void MainWindow::get_title() {
 
-    // this section will do the actual metadata parsing
-    for (string line; getline(infile, line); ) {
-            cout << line << endl;
-            cachefile << line << "\n";
-    }
+}
 
-    cachefile.close();
-    infile.close();
-    remove("Songs.dat");
+void MainWindow::get_artist() {
+
+}
+
+void MainWindow::get_album() {
+
 }
