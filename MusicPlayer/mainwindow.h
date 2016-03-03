@@ -32,12 +32,6 @@ private slots:
 
     void refresh_music();
 
-    void get_title();
-
-    void get_artist();
-
-    void get_album();
-
     //void on_actionExit_triggered();
 
     /*void on_sliderProgress_sliderMoved(int position);

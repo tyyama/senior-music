@@ -35,7 +35,7 @@ public:
   std::map<KeyP, TP> map;
 };
 
-/*template <class Key, class T>
+template <class Key, class T>
 Map<Key, T>::Map()
 {
   d = new MapPrivate<Key, T>;
@@ -167,6 +167,6 @@ void Map<Key, T>::detach()
     d->deref();
     d = new MapPrivate<Key, T>(d->map);
   }
-}*/
+}
 
 } // namespace TagLib

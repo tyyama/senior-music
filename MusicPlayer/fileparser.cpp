@@ -32,7 +32,7 @@ bool FileParser::isAudioFile(string file) {
 vector<string> FileParser::parse(string folder) {
     vector<string> songPaths;
 
-    char search_path[200];
+    char search_path[500];
     sprintf(search_path, "%s\\*.*", folder.c_str());
     WIN32_FIND_DATA fd;
     HANDLE hFind = ::FindFirstFile(search_path, &fd);

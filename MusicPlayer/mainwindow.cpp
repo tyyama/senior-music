@@ -123,7 +123,8 @@ void MainWindow::refresh_music() {
     vector<string> songPaths = fp.parse(filePath);
 
     for (vector<string>::iterator it = songPaths.begin(); it < songPaths.end(); ++it) {
-        Song song("", "", "", *it);
+        Song song(*it);
+        song.findMetadata();
         songs.push_back(song);
         cerr << *it << endl;
     }
@@ -168,16 +169,4 @@ void MainWindow::refresh_music() {
     cerr << infile.good() << endl;
     infile.close();
     get_metadata();*/
-}
-
-void MainWindow::get_title() {
-
-}
-
-void MainWindow::get_artist() {
-
-}
-
-void MainWindow::get_album() {
-
 }

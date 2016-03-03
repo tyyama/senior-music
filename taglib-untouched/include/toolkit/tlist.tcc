@@ -84,7 +84,7 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-/*template <class T>
+template <class T>
 List<T>::List()
 {
   d = new ListPrivate<T>;
@@ -291,6 +291,6 @@ void List<T>::detach()
     d->deref();
     d = new ListPrivate<T>(d->list);
   }
-}*/
+}
 
 } // namespace TagLib
