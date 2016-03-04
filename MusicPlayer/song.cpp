@@ -3,10 +3,15 @@
 
 using namespace std;
 
-Song::Song(string pTitle, string pArtist, string pAlbumName, string pFilePath)
+Song::Song(string pFilePath)
 {
-    title = pTitle;
-    artist = pArtist;
-    albumName = pAlbumName;
-    filePath = pFilePath;
+    int pFilePathSize = pFilePath.size();
+    for (int a = 0; a <= pFilePathSize; a++) {
+        filePath[a] = pFilePath[a];
+    }
+}
+
+void Song::findMetadata() {
+    //TagLib::FileRef f(filePath);
+    TagLib::FileRef f("D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\\El Camino\\03 Gold On the Ceiling.m4a");
 }
