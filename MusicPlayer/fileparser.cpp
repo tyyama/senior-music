@@ -44,6 +44,7 @@ vector<string> FileParser::parse(string folder) {
             if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                 if (strcmp(fd.cFileName, ".") && strcmp(fd.cFileName, "..")) {
                     string fullPath = folder;
+                    fullPath += "\\";
                     fullPath += fd.cFileName;
                     //cerr << "Full Path: " << fullPath << endl;
                     vector<string> folderSongs = parse(fullPath);
