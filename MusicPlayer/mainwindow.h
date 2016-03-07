@@ -8,6 +8,8 @@
 #include <QProgressBar>
 #include <QSlider>
 #include <QDebug>
+#include <vector>
+#include "song.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +22,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    vector<Song> songs;
+
 
 private slots:
     void on_actionOpen_triggered();

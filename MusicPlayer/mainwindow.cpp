@@ -116,57 +116,21 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::refresh_music() {
     FileParser fp;
-    string filePath = "D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys";//\\El Camino";
-    //string filePath = "test";
-    cerr << "****" << endl;
-    vector<Song> songs;
-    vector<string> songPaths = fp.parse(filePath);
+    vector<string> filePaths;
+    filePaths.push_back("D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys");
+    filePaths.push_back("C:\\Users\\Sawyer\\Google Drive\\Music copy");
 
-    for (vector<string>::iterator it = songPaths.begin(); it < songPaths.end(); ++it) {
-        Song song(*it);
-        song.findMetadata();
-        songs.push_back(song);
-        cerr << *it << endl;
+    vector<string> songPaths;
+    for (vector<string>::iterator sit = filePaths.begin(); sit < filePaths.end(); ++sit) {
+        songPaths = fp.parse(*sit);
+        for (vector<string>::iterator it = songPaths.begin(); it < songPaths.end(); ++it) {
+            Song song(*it);
+            song.findMetadata();
+            songs.push_back(song);
+        }
     }
-    cerr << "****" << endl;
 
     for (vector<Song>::iterator it = songs.begin(); it < songs.end(); ++it) {
         cerr << (*it).filePath << endl;
     }
-
-
-    // get potential music locations
-    /*string fileLocations = "";
-    fileLocations.append("\"D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\"");
-    //fileLocations.append("C:\\Users\\Vocaloid\\Music");
-
-    // structure command for std::system (may take more than one argument later)
-    char command[500] = "parse.bat ";
-    int curIndex = 10;
-
-    int fileLocationsSize = fileLocations.size();
-    for (int i = 0; i <= fileLocationsSize; i++) {
-        command[curIndex] = fileLocations[i];
-        curIndex++;
-    }
-
-    cerr << command << endl;
-    system(command);
-
-    // check if the file has been created
-    ifstream infile("Songs.dat");
-    bool fileExists = infile.good();
-    int count = 0;
-    while (fileExists != 1) {
-        infile.close();
-        ifstream infile("Songs.dat");
-        fileExists = infile.good();
-        cerr << "ran" << count << endl;
-        count++;
-    }
-
-    // loops through output file from parse.bat
-    cerr << infile.good() << endl;
-    infile.close();
-    get_metadata();*/
 }

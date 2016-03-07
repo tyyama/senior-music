@@ -13,5 +13,5 @@ Song::Song(string pFilePath)
 
 void Song::findMetadata() {
     //TagLib::FileRef f(filePath);
-    TagLib::FileRef f("D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\\El Camino\\03 Gold On the Ceiling.m4a");
+    //TagLib::FileRef f("D:\\Libraries\\Music\\iTunes\\iTunes Media\\Music\\The Black Keys\\El Camino\\03 Gold On the Ceiling.m4a");
 }
