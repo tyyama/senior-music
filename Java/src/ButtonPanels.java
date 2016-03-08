@@ -33,6 +33,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         fp = new FileParser();
         player.addMusicFolder("Sample Music");
         this.musicList = musicList;
+        musicList.addPlayer(player);
         this.musicList.setSongs(player.getSongs());
 
         play=new JButton("Play Selected Song");
@@ -98,7 +99,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         if (e.getSource() == progress) {
             //System.out.println("ran");
             player.seek(progress.getValue());
-            progress.setValue(player.getPercentage());
+            //progress.setValue(player.getPercentage());
         }
     }
     
