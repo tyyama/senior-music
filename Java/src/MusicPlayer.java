@@ -1,17 +1,9 @@
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javafx.util.Duration;
 import java.util.*;
-
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.*;
-
-import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 
 /**
@@ -137,6 +129,12 @@ public class MusicPlayer {
         Collections.sort(songs);
         Song[] songArray = new Song[songs.size()];
         return songs.toArray(songArray);
+    }
+
+    public void setVolume(double volume) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(volume);
+        }
     }
 
     public static String encode(String filePath) {

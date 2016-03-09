@@ -17,9 +17,11 @@ public class SeniorMusicPlayer
         win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MusicList musicList = new MusicList();
         musicList.setSize(new Dimension(600, 600));
-        ButtonPanels buttons=new ButtonPanels(musicList);
+        VolumeSlider vSlider = new VolumeSlider();
+        ButtonPanels buttons=new ButtonPanels(musicList, vSlider);
         buttons.setSize(new Dimension(50,50));
         win.getContentPane().add(buttons,BorderLayout.SOUTH);
+        win.getContentPane().add(vSlider, BorderLayout.EAST);
         win.getContentPane().add(musicList, BorderLayout.CENTER);
         win.setVisible(true);
     

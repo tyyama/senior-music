@@ -13,12 +13,14 @@ import java.io.*;
  */
 public class ButtonPanels extends JPanel implements ActionListener, MouseListener, ChangeListener 
 {
-    private static final int PROGRESS_RES = 1000000;
+    private static int PROGRESS_RES = 1000000;
+    private static int VOLUME_RES;
 
     // instance variables - replace the example below with your own
     private JButton play, resume, stop, pause;
     private JList<Song> songList;
     private JSlider progress;
+    private VolumeSlider volume;
     private JLabel progressLabel;
     private MusicPlayer player;
     private FileParser fp;
@@ -29,7 +31,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     /**
      * Constructor for objects of class ButtonPanels
      */
-    public ButtonPanels(MusicList musicList) throws IOException
+    public ButtonPanels(MusicList musicList, VolumeSlider volume) throws IOException
     {
         new JFXPanel();
         player = new MusicPlayer();
@@ -38,6 +40,10 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         this.musicList = musicList;
         musicList.addPlayer(player);
         this.musicList.setSongs(player.getSongs());
+
+        this.volume = volume;
+        volume.addChangeListener(this);
+        VOLUME_RES = volume.getResolution();
 
         play=new JButton("Play Selected Song");
         pause=new JButton("Pause");
@@ -123,6 +129,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
             System.out.println(status);
             if (status.equals("PLAYING")) {
                 playing = true;
+                player.setVolume((double) volume.getValue() / VOLUME_RES);
                 pause.setText("Pause");
                 pause.setEnabled(true);
                 stop.setEnabled(true);
@@ -142,6 +149,9 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
             System.out.println("***" + progress.getValue() + "***");
             player.seek((double) progress.getValue() / PROGRESS_RES);
             //progress.setValue(player.getPercentage());
+        } else if (e.getSource() == volume) {
+            System.out.println(volume.getValue());
+            player.setVolume((double) volume.getValue() / VOLUME_RES);
         }
     }
 

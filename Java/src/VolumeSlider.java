@@ -1,25 +1,29 @@
+import javafx.scene.control.TextFormatter;
+
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import javax.swing.event.*; 
+import java.util.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 /**
  * Write a description of class VolumeSlider here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class VolumeSlider extends JPanel implements ActionListener, MouseListener, ChangeListener
+public class VolumeSlider extends JPanel implements ChangeListener
 {
     // instance variables - replace the example below with your own
     private JSlider volumeSlider;
     private JLabel volume;
+    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     /**
      * Constructor for objects of class VolumeSlider
      */
     public VolumeSlider()
     {
-        volumeSlider=new JSlider(JSlider.VERTICAL);
+        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 1000, 200);
         volumeSlider.addChangeListener(this);
         volume=new JLabel("Volume");
         add(volumeSlider);
@@ -55,10 +59,12 @@ public class VolumeSlider extends JPanel implements ActionListener, MouseListene
     }
     
     public void stateChanged(ChangeEvent e){
-        if(e.getSource()==volumeSlider){
-            System.out.println("Volume changed");
+        if(e.getSource() == volumeSlider){
+            //System.out.println("skfaksdfhk");
+            for (ChangeListener listener : listeners) {
+                listener.stateChanged(new ChangeEvent(this));
+            }
         }
-    
     }
     
     public JSlider getSlider(){
@@ -66,6 +72,16 @@ public class VolumeSlider extends JPanel implements ActionListener, MouseListene
     
     }
 
+    public int getResolution() {
+        return volumeSlider.getMaximum();
+    }
 
+    public void addChangeListener(ChangeListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    public int getValue() {
+        return volumeSlider.getValue();
+    }
     
 }
