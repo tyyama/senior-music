@@ -132,7 +132,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
                     stop.setEnabled(true);
                 } else if (status.equals("STOPPED")) {
                     playing = false;
-                    pause.setText("Resume");
+                    pause.setText("Play");
                     pause.setEnabled(false);
                     stop.setEnabled(false);
                 }

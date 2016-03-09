@@ -48,21 +48,37 @@ public class MusicPlayer {
         System.out.println("Now playing: " + curSong);
         Media hit = new Media("file:///" + encode(curSong.filePath));//.replace(" ", "%20").replace("\\", "/"));
         mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnPlaying(new Runnable() {
+            @Override
+            public void run() {
+                stateChanged();
+            }
+        });
         mediaPlayer.play();
     }
 
     public void pause() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
+            mediaPlayer.setOnPaused(new Runnable() {
+                @Override
+                public void run() {
+                    stateChanged();
+                }
+            });
         }
-        stateChanged();
     }
 
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
+            mediaPlayer.setOnHalted(new Runnable() {
+                @Override
+                public void run() {
+                    stateChanged();
+                }
+            });
         }
-        stateChanged();
     }
 
     public void seek(int value) {
