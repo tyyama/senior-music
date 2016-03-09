@@ -13,6 +13,8 @@ import java.io.*;
  */
 public class ButtonPanels extends JPanel implements ActionListener, MouseListener, ChangeListener 
 {
+    private static final int PROGRESS_RES = 1000000;
+
     // instance variables - replace the example below with your own
     private JButton play, resume, stop, pause;
     private JList<Song> songList;
@@ -22,6 +24,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     private FileParser fp;
     private MusicList musicList;
     private boolean playing = false;
+    private boolean slidingProgress = false;
 
     /**
      * Constructor for objects of class ButtonPanels
@@ -42,9 +45,10 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         play.addActionListener(this);
         pause.addActionListener(this);
         stop.addActionListener(this);
-        progress=new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        progress=new JSlider(JSlider.HORIZONTAL, 0, PROGRESS_RES, 0);
+        progress.addChangeListener(this);
         progress.addMouseListener(this);
-        ProgressUpdate progressUpdate = new ProgressUpdate(progress, player);
+        ProgressUpdate progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES);
         progressUpdate.start();
         progressLabel= new JLabel("Progress");
         add(play);
@@ -96,18 +100,17 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     public void mouseEntered(MouseEvent e){
     
     }
-    
-    public void mouseReleased(MouseEvent e){
+
+    public void mousePressed(MouseEvent e){
         if (e.getSource() == progress) {
-            //System.out.println("ran");
-            player.seek(progress.getValue());
-            //progress.setValue(player.getPercentage());
+            slidingProgress = true;
         }
     }
     
-    public void mousePressed(MouseEvent e){
-    
-    
+    public void mouseReleased(MouseEvent e){
+        if (e.getSource() == progress) {
+            slidingProgress = false;
+        }
     }
     
     public void mouseClicked(MouseEvent e){
@@ -116,30 +119,29 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
 
     public void stateChanged(ChangeEvent e){
         if (e.getSource() == player) {
-            //System.out.println("SUCCESS");
-            try {
-                Thread.sleep(200);
-                String status = player.getStatus();
-                if (status.equals("PLAYING")) {
-                    playing = true;
-                    pause.setText("Pause");
-                    pause.setEnabled(true);
-                    stop.setEnabled(true);
-                } else if (status.equals("PAUSED")) {
-                    playing = false;
-                    pause.setText("Resume");
-                    pause.setEnabled(true);
-                    stop.setEnabled(true);
-                } else if (status.equals("STOPPED")) {
-                    playing = false;
-                    pause.setText("Play");
-                    pause.setEnabled(false);
-                    stop.setEnabled(false);
-                }
-
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            String status = player.getStatus();
+            System.out.println(status);
+            if (status.equals("PLAYING")) {
+                playing = true;
+                pause.setText("Pause");
+                pause.setEnabled(true);
+                stop.setEnabled(true);
+            } else if (status.equals("PAUSED")) {
+                playing = false;
+                pause.setText("Resume");
+                pause.setEnabled(true);
+                stop.setEnabled(true);
+            } else if (status.equals("STOPPED")) {
+                playing = false;
+                pause.setText("Play");
+                pause.setEnabled(false);
+                stop.setEnabled(false);
             }
+        } else if (e.getSource() == progress && slidingProgress) {
+            //System.out.println("ran");
+            System.out.println("***" + progress.getValue() + "***");
+            player.seek((double) progress.getValue() / PROGRESS_RES);
+            //progress.setValue(player.getPercentage());
         }
     }
 

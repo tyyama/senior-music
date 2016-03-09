@@ -47,57 +47,63 @@ public class MusicPlayer {
         curSong = newSong;
         System.out.println("Now playing: " + curSong);
         Media hit = new Media("file:///" + encode(curSong.filePath));//.replace(" ", "%20").replace("\\", "/"));
+
         mediaPlayer = new MediaPlayer(hit);
+
         mediaPlayer.setOnPlaying(new Runnable() {
             @Override
             public void run() {
                 stateChanged();
             }
         });
+
+        mediaPlayer.setOnStopped(new Runnable() {
+            @Override
+            public void run() {
+                stateChanged();
+            }
+        });
+
+        mediaPlayer.setOnPaused(new Runnable() {
+            @Override
+            public void run() {
+                stateChanged();
+            }
+        });
+
         mediaPlayer.play();
     }
 
     public void pause() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
-            mediaPlayer.setOnPaused(new Runnable() {
-                @Override
-                public void run() {
-                    stateChanged();
-                }
-            });
         }
     }
 
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
-            mediaPlayer.setOnHalted(new Runnable() {
-                @Override
-                public void run() {
-                    stateChanged();
-                }
-            });
         }
     }
 
-    public void seek(int value) {
+    public void seek(double value) {
         if (mediaPlayer != null) {
-            double newSeekTime = curSong.duration.getSeconds() * value / 100;
+            System.out.println(value);
+            double newSeekTime = curSong.duration.getSeconds() * value;
             System.out.println(newSeekTime);
             Duration newDuration = new Duration(newSeekTime * 1000);
             mediaPlayer.seek(newDuration);
         }
     }
 
-    public int getPercentage() {
+    public double getPercentage() {
         if (mediaPlayer != null) {
             float thisDuration = curSong.duration.getSeconds();
             float curTime = (float) mediaPlayer.getCurrentTime().toSeconds();
             /*System.out.println("This Duration: " + thisDuration);
             System.out.println("Current Time: " + curTime);
             System.out.println("Percentage: " + (curTime / thisDuration));*/
-            return Math.round(curTime / thisDuration * 100);
+            return curTime / thisDuration;
         }
 
         return 0;
@@ -148,7 +154,6 @@ public class MusicPlayer {
     }
 
     public String getStatus() {
-        System.out.println(mediaPlayer.getStatus());
         return mediaPlayer.getStatus().toString();
     }
 }
