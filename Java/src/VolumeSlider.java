@@ -23,9 +23,9 @@ public class VolumeSlider extends JPanel implements ChangeListener
      */
     public VolumeSlider()
     {
-        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 1000, 200);
+        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 100, 50);
         volumeSlider.addChangeListener(this);
-        volume=new JLabel("Volume");
+        volume=new JLabel("50");
         add(volumeSlider);
         add(volume);
         
@@ -61,6 +61,7 @@ public class VolumeSlider extends JPanel implements ChangeListener
     public void stateChanged(ChangeEvent e){
         if(e.getSource() == volumeSlider){
             //System.out.println("skfaksdfhk");
+            volume.setText(Integer.toString(volumeSlider.getValue()));
             for (ChangeListener listener : listeners) {
                 listener.stateChanged(new ChangeEvent(this));
             }

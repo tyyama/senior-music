@@ -9,17 +9,41 @@ public class ProgressUpdate extends Thread {
     JSlider progress;
     MusicPlayer player;
     int PROGRESS_RES;
+    JLabel progressLabel;
 
-    public ProgressUpdate(JSlider progress, MusicPlayer player, int PROGRESS_RES) {
+    public ProgressUpdate(JSlider progress, MusicPlayer player, int PROGRESS_RES, JLabel progressLabel) {
         this.progress = progress;
         this.player = player;
         this.PROGRESS_RES = PROGRESS_RES;
+        this.progressLabel = progressLabel;
     }
 
     @Override
     public void run() {
         while (true) {
             progress.setValue((int) Math.round(player.getPercentage() * PROGRESS_RES));
+            try {
+                int durationTotal = (int) player.getDuration().toSeconds();
+                String durationMinutes = Integer.toString(durationTotal / 60);
+                String durationSeconds = Integer.toString(durationTotal % 60);
+
+                if (durationTotal % 60 < 10) {
+                    durationSeconds = "0" + durationSeconds;
+                }
+
+                int curTime = (int) player.getCurrentTime().toSeconds();
+                String curTimeMinutes = Integer.toString(curTime / 60);
+                String curTimeSeconds = Integer.toString(curTime % 60);
+
+                if (curTime % 60 < 10) {
+                    curTimeSeconds = "0" + curTimeSeconds;
+                }
+
+                progressLabel.setText(curTimeMinutes + ":" + curTimeSeconds + " / " + durationMinutes + ":" + durationSeconds);
+            } catch (NullPointerException e) {
+
+            }
+
 
             try {
                 Thread.sleep(10);

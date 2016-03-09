@@ -51,12 +51,14 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         play.addActionListener(this);
         pause.addActionListener(this);
         stop.addActionListener(this);
+
         progress=new JSlider(JSlider.HORIZONTAL, 0, PROGRESS_RES, 0);
         progress.addChangeListener(this);
         progress.addMouseListener(this);
-        ProgressUpdate progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES);
-        progressUpdate.start();
         progressLabel= new JLabel("Progress");
+        ProgressUpdate progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
+        progressUpdate.start();
+
         add(play);
         add(pause);
         add(stop);

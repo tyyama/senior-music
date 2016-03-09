@@ -39,6 +39,7 @@ public class MusicPlayer {
         curSong = newSong;
         System.out.println("Now playing: " + curSong);
         Media hit = new Media("file:///" + encode(curSong.filePath));//.replace(" ", "%20").replace("\\", "/"));
+        generateQueue();
 
         mediaPlayer = new MediaPlayer(hit);
 
@@ -60,6 +61,17 @@ public class MusicPlayer {
             @Override
             public void run() {
                 stateChanged();
+            }
+        });
+
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                if (nextMusic.peek() != null) {
+                    prevMusic.push(curSong);
+                    curSong = nextMusic.remove();
+                    play(curSong);
+                }
             }
         });
 
@@ -153,5 +165,29 @@ public class MusicPlayer {
 
     public String getStatus() {
         return mediaPlayer.getStatus().toString();
+    }
+
+    public Duration getDuration() {
+        if (mediaPlayer != null)
+            return mediaPlayer.getStopTime();
+        return null;
+    }
+
+    public Duration getCurrentTime() {
+        if (mediaPlayer != null)
+            return mediaPlayer.getCurrentTime();
+        return null;
+    }
+
+    private void generateQueue() {
+        int startingIndex = songs.indexOf(curSong) + 1;
+        if (startingIndex >= songs.size()) {
+            startingIndex = 0;
+        }
+        nextMusic.clear();
+        ListIterator<Song> it = songs.listIterator(startingIndex);
+        while (it.hasNext()) {
+            nextMusic.add(it.next());
+        }
     }
 }
