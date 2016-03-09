@@ -1,3 +1,4 @@
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javafx.util.Duration;
@@ -7,6 +8,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,6 +25,7 @@ public class MusicPlayer {
     private Song curSong;
     private MediaPlayer mediaPlayer;
     private FileParser fp;
+    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public MusicPlayer() {
         fp = new FileParser();
@@ -32,6 +35,8 @@ public class MusicPlayer {
         if (mediaPlayer != null) {
             mediaPlayer.play();
         }
+
+        stateChanged();
     }
 
     public void play(Song newSong) {
@@ -50,12 +55,14 @@ public class MusicPlayer {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
         }
+        stateChanged();
     }
 
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
+        stateChanged();
     }
 
     public void seek(int value) {
@@ -112,5 +119,20 @@ public class MusicPlayer {
 
     public static String encode(String filePath) {
         return filePath.replace(" ", "%20").replace("\\", "/").replace("[", "%5B").replace("]", "%5D");
+    }
+
+    public void addChangeListener(ChangeListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+    public void stateChanged() {
+        for (ChangeListener listener : listeners) {
+            listener.stateChanged(new ChangeEvent(this));
+        }
+    }
+
+    public String getStatus() {
+        System.out.println(mediaPlayer.getStatus());
+        return mediaPlayer.getStatus().toString();
     }
 }

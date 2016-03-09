@@ -52,6 +52,8 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         add(stop);
         add(progress);
         add(progressLabel);
+
+        player.addChangeListener(this);
     }
     
     public void actionPerformed(ActionEvent e){
@@ -69,10 +71,10 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         else if(e.getSource()==pause){
             if (playing) {
                 player.pause();
-                pause.setText("Resume");
+                //pause.setText("Resume");
             } else {
                 player.play();
-                pause.setText("Pause");
+                //pause.setText("Pause");
             }
             playing = !playing;
             System.out.println("I clicked pause");
@@ -113,7 +115,32 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     }
 
     public void stateChanged(ChangeEvent e){
+        if (e.getSource() == player) {
+            //System.out.println("SUCCESS");
+            try {
+                Thread.sleep(200);
+                String status = player.getStatus();
+                if (status.equals("PLAYING")) {
+                    playing = true;
+                    pause.setText("Pause");
+                    pause.setEnabled(true);
+                    stop.setEnabled(true);
+                } else if (status.equals("PAUSED")) {
+                    playing = false;
+                    pause.setText("Resume");
+                    pause.setEnabled(true);
+                    stop.setEnabled(true);
+                } else if (status.equals("STOPPED")) {
+                    playing = false;
+                    pause.setText("Resume");
+                    pause.setEnabled(false);
+                    stop.setEnabled(false);
+                }
 
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
 
