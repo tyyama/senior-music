@@ -12,7 +12,7 @@ import javax.swing.event.ChangeListener;
 public class MusicPlayer {
     private ArrayList<Song> songs = new ArrayList<Song>();
     private ArrayList<String> filePaths = new ArrayList<String>();
-    private Queue<Song> nextMusic = new LinkedList<Song>();
+    private Deque<Song> nextMusic = new LinkedList<Song>();
     private Stack<Song> prevMusic = new Stack<Song>();
     private Song curSong;
     private MediaPlayer mediaPlayer;
@@ -67,9 +67,9 @@ public class MusicPlayer {
         mediaPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
-                if (nextMusic.peek() != null) {
+                if (nextMusic.peekFirst() != null) {
                     prevMusic.push(curSong);
-                    curSong = nextMusic.remove();
+                    curSong = nextMusic.removeFirst();
                     play(curSong);
                 }
             }
@@ -113,11 +113,11 @@ public class MusicPlayer {
         return 0;
     }
 
-    public void playPrevSong() {
+    public void playPrev() {
 
     }
 
-    public void playNextSong() {
+    public void playNext() {
 
     }
 
@@ -187,7 +187,7 @@ public class MusicPlayer {
         nextMusic.clear();
         ListIterator<Song> it = songs.listIterator(startingIndex);
         while (it.hasNext()) {
-            nextMusic.add(it.next());
+            nextMusic.addFirst(it.next());
         }
     }
 }

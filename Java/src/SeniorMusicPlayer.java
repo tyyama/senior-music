@@ -13,11 +13,11 @@ public class SeniorMusicPlayer
 {
     public static void main(String[] args) throws IOException {
         JFrame win=new JFrame("Music Player For Senior Citizens");
-        win.setSize(700,700);
+        win.setSize(800,700);
         win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MusicList musicList = new MusicList();
-        musicList.setSize(new Dimension(600, 600));
         VolumeSlider vSlider = new VolumeSlider();
+
         ButtonPanels buttons=new ButtonPanels(musicList, vSlider);
         buttons.setSize(new Dimension(50,50));
         win.getContentPane().add(buttons,BorderLayout.SOUTH);

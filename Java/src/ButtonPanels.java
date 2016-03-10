@@ -17,7 +17,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     private static int VOLUME_RES;
 
     // instance variables - replace the example below with your own
-    private JButton play, resume, stop, pause;
+    private JButton play, stop, pause, prev, next;
     private JList<Song> songList;
     private JSlider progress;
     private VolumeSlider volume;
@@ -48,9 +48,13 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         play=new JButton("Play Selected Song");
         pause=new JButton("Pause");
         stop=new JButton("Stop");
+        prev = new JButton("Previous");
+        next = new JButton("Next");
         play.addActionListener(this);
         pause.addActionListener(this);
         stop.addActionListener(this);
+        prev.addActionListener(this);
+        next.addActionListener(this);
 
         progress=new JSlider(JSlider.HORIZONTAL, 0, PROGRESS_RES, 0);
         progress.addChangeListener(this);
@@ -62,6 +66,8 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         add(play);
         add(pause);
         add(stop);
+        add(prev);
+        add(next);
         add(progress);
         add(progressLabel);
 
@@ -90,13 +96,15 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
             }
             playing = !playing;
             System.out.println("I clicked pause");
-        }
-        
-        else if(e.getSource()==stop){
+        } else if(e.getSource()==stop){
             playing = false;
             player.stop();
             System.out.println("I clicked stop");
             
+        } else if (e.getSource() == prev) {
+            player.playPrev();
+        } else if (e.getSource() == next) {
+            player.playNext();
         }
     
     }

@@ -27,9 +27,8 @@ public class MusicList extends JPanel {
         });
 
         JScrollPane s = new JScrollPane(songList);
-        s.setPreferredSize(new Dimension(600, 600));
+        s.setPreferredSize(new Dimension(700, 600));
         add(s);
-        setSize(new Dimension(600, 600));
     }
 
     public Song getSelectedValue() {
