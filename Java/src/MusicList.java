@@ -9,11 +9,19 @@ import java.io.UnsupportedEncodingException;
  */
 public class MusicList extends JPanel {
     private JList<Song> songList;
+    private DefaultListModel listModel;
     private MusicPlayer player;
 
 
-    public MusicList(int sizeX, int sizeY) {
+    public MusicList(int sizeX, int sizeY, Color BGColor) {
+        setBackground(BGColor);
+        setLayout(new GridBagLayout());
+
+
+
+
         songList = new JList<Song>();
+        songList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         songList.setModel(new DefaultListModel());
         songList.addMouseListener(new MouseAdapter() {
             @Override
@@ -27,8 +35,13 @@ public class MusicList extends JPanel {
         });
 
         JScrollPane s = new JScrollPane(songList);
-        s.setPreferredSize(new Dimension(sizeX, sizeY));
-        add(s);
+        //s.setPreferredSize(new Dimension(sizeX, sizeY));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.weightx = gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(s, gbc);
     }
 
     public Song getSelectedValue() {

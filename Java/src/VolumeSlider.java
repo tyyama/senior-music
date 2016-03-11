@@ -1,5 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 /**
@@ -13,26 +15,32 @@ public class VolumeSlider extends JPanel implements ChangeListener
     private static int STARTING_VOLUME = 10;
     // instance variables - replace the example below with your own
     private JSlider volumeSlider;
-    private JLabel volume;
+    private JLabel volumeLabel;
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     /**
      * Constructor for objects of class VolumeSlider
      */
-    public VolumeSlider()
+    public VolumeSlider(Color BGColor)
     {
-        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 100, STARTING_VOLUME);
+        setBackground(BGColor);
+
+        volumeSlider = new JSlider(JSlider.VERTICAL, 0, 100, STARTING_VOLUME);
         volumeSlider.addChangeListener(this);
-        volume=new JLabel(Integer.toString(STARTING_VOLUME));
+        volumeSlider.setBackground(BGColor);
+
+        volumeLabel = new JLabel(Integer.toString(STARTING_VOLUME));
+        volumeLabel.setForeground(Color.getHSBColor(0, 0, .95f));
+
         add(volumeSlider);
-        add(volume);
+        add(volumeLabel);
         
         
     }
     
     public void stateChanged(ChangeEvent e){
         if(e.getSource() == volumeSlider){
-            volume.setText(Integer.toString(volumeSlider.getValue()));
+            volumeLabel.setText(Integer.toString(volumeSlider.getValue()));
 
             for (ChangeListener listener : listeners) {
                 listener.stateChanged(new ChangeEvent(this));

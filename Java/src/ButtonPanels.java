@@ -33,9 +33,12 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     /**
      * Constructor for objects of class ButtonPanels
      */
-    public ButtonPanels(MusicList musicList, VolumeSlider volume) throws IOException
+    public ButtonPanels(MusicList musicList, VolumeSlider volume, Color BGColor) throws IOException
     {
         new JFXPanel();
+
+        setBackground(BGColor);
+
         player = new MusicPlayer();
         fp = new FileParser();
         player.addMusicFolder("Sample Music");
@@ -74,7 +77,11 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         progress.setEnabled(false);
         progress.addChangeListener(this);
         progress.addMouseListener(this);
+        progress.setBackground(BGColor);
+
         progressLabel= new JLabel("Progress");
+        progressLabel.setForeground(Color.getHSBColor(0, 0, .95f));
+
         progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
         progressUpdate.start();
 
@@ -203,6 +210,9 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
             button.setIcon(new ImageIcon(img));
             // to remote the spacing between the image and button's borders
             button.setMargin(new Insets(0, 0, 0, 0));
+            button.setOpaque(false);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
             // to add a different background
             //button.setBackground();
             // to remove the border
