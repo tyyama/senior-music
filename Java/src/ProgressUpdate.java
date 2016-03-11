@@ -10,6 +10,7 @@ public class ProgressUpdate extends Thread {
     MusicPlayer player;
     int PROGRESS_RES;
     JLabel progressLabel;
+    String status = "STOPPED";
 
     public ProgressUpdate(JSlider progress, MusicPlayer player, int PROGRESS_RES, JLabel progressLabel) {
         this.progress = progress;
@@ -22,28 +23,32 @@ public class ProgressUpdate extends Thread {
     public void run() {
         while (true) {
             progress.setValue((int) Math.round(player.getPercentage() * PROGRESS_RES));
-            try {
-                int durationTotal = (int) player.getDuration().toSeconds();
-                String durationMinutes = Integer.toString(durationTotal / 60);
-                String durationSeconds = Integer.toString(durationTotal % 60);
 
-                if (durationTotal % 60 < 10) {
-                    durationSeconds = "0" + durationSeconds;
+            if (status.equals("PLAYING") || status.equals("PAUSED")) {
+                try {
+                    int durationTotal = (int) player.getDuration().toSeconds();
+                    String durationMinutes = Integer.toString(durationTotal / 60);
+                    String durationSeconds = Integer.toString(durationTotal % 60);
+
+                    if (durationTotal % 60 < 10) {
+                        durationSeconds = "0" + durationSeconds;
+                    }
+
+                    int curTime = (int) player.getCurrentTime().toSeconds();
+                    String curTimeMinutes = Integer.toString(curTime / 60);
+                    String curTimeSeconds = Integer.toString(curTime % 60);
+
+                    if (curTime % 60 < 10) {
+                        curTimeSeconds = "0" + curTimeSeconds;
+                    }
+
+                    progressLabel.setText(curTimeMinutes + ":" + curTimeSeconds + " / " + durationMinutes + ":" + durationSeconds);
+                } catch (NullPointerException e) {
+
                 }
-
-                int curTime = (int) player.getCurrentTime().toSeconds();
-                String curTimeMinutes = Integer.toString(curTime / 60);
-                String curTimeSeconds = Integer.toString(curTime % 60);
-
-                if (curTime % 60 < 10) {
-                    curTimeSeconds = "0" + curTimeSeconds;
-                }
-
-                progressLabel.setText(curTimeMinutes + ":" + curTimeSeconds + " / " + durationMinutes + ":" + durationSeconds);
-            } catch (NullPointerException e) {
-
+            } else {
+                progressLabel.setText("Progress");
             }
-
 
             try {
                 Thread.sleep(10);
@@ -51,5 +56,9 @@ public class ProgressUpdate extends Thread {
                 break;
             }
         }
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

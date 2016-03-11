@@ -20,6 +20,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     private JButton play, stop, pause, prev, next;
     private JList<Song> songList;
     private JSlider progress;
+    private ProgressUpdate progressUpdate;
     private VolumeSlider volume;
     private JLabel progressLabel;
     private MusicPlayer player;
@@ -56,11 +57,15 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         prev.addActionListener(this);
         next.addActionListener(this);
 
+        prev.setEnabled(false);
+        next.setEnabled(false);
+
         progress=new JSlider(JSlider.HORIZONTAL, 0, PROGRESS_RES, 0);
+        progress.setEnabled(false);
         progress.addChangeListener(this);
         progress.addMouseListener(this);
         progressLabel= new JLabel("Progress");
-        ProgressUpdate progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
+        progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
         progressUpdate.start();
 
         add(play);
@@ -89,17 +94,13 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         else if(e.getSource()==pause){
             if (playing) {
                 player.pause();
-                //pause.setText("Resume");
             } else {
                 player.play();
-                //pause.setText("Pause");
             }
             playing = !playing;
-            System.out.println("I clicked pause");
         } else if(e.getSource()==stop){
             playing = false;
             player.stop();
-            System.out.println("I clicked stop");
             
         } else if (e.getSource() == prev) {
             player.playPrev();
@@ -110,7 +111,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     }
     
     public void mouseExited(MouseEvent e){
-    
+
     }
     
     public void mouseEntered(MouseEvent e){
@@ -136,31 +137,36 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     public void stateChanged(ChangeEvent e){
         if (e.getSource() == player) {
             String status = player.getStatus();
-            System.out.println(status);
+            progressUpdate.setStatus(status);
             if (status.equals("PLAYING")) {
                 playing = true;
                 player.setVolume((double) volume.getValue() / VOLUME_RES);
                 pause.setText("Pause");
                 pause.setEnabled(true);
                 stop.setEnabled(true);
+                prev.setEnabled(true);
+                next.setEnabled(true);
+                progress.setEnabled(true);
             } else if (status.equals("PAUSED")) {
                 playing = false;
                 pause.setText("Resume");
                 pause.setEnabled(true);
                 stop.setEnabled(true);
+                prev.setEnabled(true);
+                next.setEnabled(true);
+                progress.setEnabled(true);
             } else if (status.equals("STOPPED")) {
                 playing = false;
                 pause.setText("Play");
                 pause.setEnabled(false);
                 stop.setEnabled(false);
+                prev.setEnabled(false);
+                next.setEnabled(false);
+                progress.setEnabled(false);
             }
         } else if (e.getSource() == progress && slidingProgress) {
-            //System.out.println("ran");
-            System.out.println("***" + progress.getValue() + "***");
             player.seek((double) progress.getValue() / PROGRESS_RES);
-            //progress.setValue(player.getPercentage());
         } else if (e.getSource() == volume) {
-            System.out.println(volume.getValue());
             player.setVolume((double) volume.getValue() / VOLUME_RES);
         }
     }

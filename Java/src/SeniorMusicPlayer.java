@@ -12,10 +12,15 @@ import javax.swing.plaf.BorderUIResource;
 public class SeniorMusicPlayer  
 {
     public static void main(String[] args) throws IOException {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         JFrame win=new JFrame("Music Player For Senior Citizens");
-        win.setSize(800,700);
+        win.setSize(900,700);
         win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        MusicList musicList = new MusicList();
+        MusicList musicList = new MusicList(800, 600);
         VolumeSlider vSlider = new VolumeSlider();
 
         ButtonPanels buttons=new ButtonPanels(musicList, vSlider);

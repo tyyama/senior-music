@@ -12,7 +12,7 @@ public class MusicList extends JPanel {
     private MusicPlayer player;
 
 
-    public MusicList() {
+    public MusicList(int sizeX, int sizeY) {
         songList = new JList<Song>();
         songList.setModel(new DefaultListModel());
         songList.addMouseListener(new MouseAdapter() {
@@ -27,7 +27,7 @@ public class MusicList extends JPanel {
         });
 
         JScrollPane s = new JScrollPane(songList);
-        s.setPreferredSize(new Dimension(700, 600));
+        s.setPreferredSize(new Dimension(sizeX, sizeY));
         add(s);
     }
 

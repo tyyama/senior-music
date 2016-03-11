@@ -92,9 +92,9 @@ public class MusicPlayer {
 
     public void seek(double value) {
         if (mediaPlayer != null) {
-            System.out.println(value);
+            //System.out.println(value);
             double newSeekTime = curSong.duration.getSeconds() * value;
-            System.out.println(newSeekTime);
+            //System.out.println(newSeekTime);
             Duration newDuration = new Duration(newSeekTime * 1000);
             mediaPlayer.seek(newDuration);
         }
