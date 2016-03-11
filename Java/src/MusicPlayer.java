@@ -18,7 +18,7 @@ public class MusicPlayer {
     private MediaPlayer mediaPlayer;
     private FileParser fp;
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    private boolean shuffle = false;
+    private boolean shuffle = true;
 
     public MusicPlayer() {
         fp = new FileParser();
@@ -112,15 +112,16 @@ public class MusicPlayer {
 
     public void playPrev() {
         nextMusic.addFirst(curSong);
-        if (prevMusic.peekLast() != null) {
+        play(getPrevSong());
+        /*if (prevMusic.peekLast() != null) {
             curSong = prevMusic.removeLast();
-            play(curSong);
+            play(prevMusic.removeLast());
         } else {
             Random rand = new Random();
             int randIndex = rand.nextInt(songs.size());
-            curSong = songs.get(randIndex);
-            play(curSong);
-        }
+            //curSong = songs.get(randIndex);
+            play(songs.get(randIndex));
+        }*/
     }
 
     public void playNext() {
@@ -130,8 +131,7 @@ public class MusicPlayer {
             generateQueue();
         }
 
-        curSong = getPrevSong();
-        play(curSong);
+        play(nextMusic.removeFirst());
     }
 
     public void addMusicFolder(String folder) throws IOException {
@@ -201,14 +201,25 @@ public class MusicPlayer {
     }
 
     private void generateQueue() {
-        int startingIndex = songs.indexOf(curSong) + 1;
-        if (startingIndex >= songs.size()) {
-            startingIndex = 0;
-        }
         nextMusic.clear();
-        ListIterator<Song> it = songs.listIterator(startingIndex);
-        while (it.hasNext()) {
-            nextMusic.addLast(it.next());
+        if (shuffle) {
+            Random rand = new Random();
+            for (int i = 0; i < 10; i++) {
+                int randIndex = rand.nextInt(songs.size());
+                nextMusic.addFirst(songs.get(randIndex));
+            }
+        } else {
+            int startingIndex = songs.indexOf(curSong) + 1;
+            if (startingIndex >= songs.size()) {
+                startingIndex = 0;
+            }
+
+            ListIterator<Song> it = songs.listIterator(startingIndex);
+
+            int size = songs.size();
+            for (int i = startingIndex; i < startingIndex + 10; i++) {
+                nextMusic.addLast(songs.get(i % size));
+            }
         }
     }
 

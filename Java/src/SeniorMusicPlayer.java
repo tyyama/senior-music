@@ -25,6 +25,7 @@ public class SeniorMusicPlayer
 
         ButtonPanels buttons=new ButtonPanels(musicList, vSlider);
         buttons.setSize(new Dimension(50,50));
+        
         win.getContentPane().add(buttons,BorderLayout.SOUTH);
         win.getContentPane().add(vSlider, BorderLayout.EAST);
         win.getContentPane().add(musicList, BorderLayout.CENTER);

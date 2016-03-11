@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 /**
  * Write a description of class ButtonPanels here.
