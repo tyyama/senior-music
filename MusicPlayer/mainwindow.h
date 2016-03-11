@@ -36,6 +36,12 @@ private slots:
 
     void refresh_music();
 
+    void update_song_list();
+
+    void update_display_metadata();
+
+    void on_player_mediaStatusChanged();
+
     //void on_actionExit_triggered();
 
     /*void on_sliderProgress_sliderMoved(int position);

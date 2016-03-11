@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include <string>
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -44,6 +45,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(player, &QMediaPlayer::durationChanged,bar,&QProgressBar::setValue);*/
 
     refresh_music();
+
+    for (vector<Song>::iterator it = songs.begin(); it < songs.end(); ++it) {
+        //cerr << (*it).title << endl;
+
+    }
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +59,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Open a File","","Audio File (*.mp3)" ); //Chooses specified file type
+    QString filename = QFileDialog::getOpenFileName(this, "Open a File","","Audio File (*.mp3 *.m4a *.flac *.wav)" ); //Chooses specified file type
     on_actionStop_triggered();
 
     player->setMedia(QUrl::fromLocalFile(filename));
@@ -64,6 +70,7 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionPlay_triggered()
 {
    player->play();
+   //connect(player, &QMediaPlayer::mediaStatusChanged, MainWindow::update_display_metadata);
    ui->statusBar->showMessage("Playing");
 }
 
@@ -129,8 +136,22 @@ void MainWindow::refresh_music() {
             songs.push_back(song);
         }
     }
+}
 
+void MainWindow::update_song_list() {
     for (vector<Song>::iterator it = songs.begin(); it < songs.end(); ++it) {
-        cerr << (*it).filePath << endl;
+        cerr << (*it).title << endl;
     }
+}
+
+void MainWindow::update_display_metadata() {
+    cerr << "***" << endl;
+    if (player->isMetaDataAvailable()) {
+        cerr << "metadata is available" << endl;
+    }
+    cerr << "***" << endl;
+}
+
+void MainWindow::on_player_mediaStatusChanged() {
+
 }
