@@ -12,11 +12,11 @@ import javax.swing.plaf.BorderUIResource;
 public class SeniorMusicPlayer  
 {
     public static void main(String[] args) throws IOException {
-        try {
+        /*try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         JFrame win=new JFrame("Music Player For Senior Citizens");
         win.setSize(900,700);
         win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

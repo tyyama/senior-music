@@ -32,32 +32,6 @@ public class VolumeSlider extends JPanel implements ChangeListener
         
     }
     
-     public void actionPerformed(ActionEvent e){
-    
-    }
-    
-    public void mouseExited(MouseEvent e){
-    
-    }
-    
-    public void mouseEntered(MouseEvent e){
-    
-    }
-    
-    public void mouseReleased(MouseEvent e){
-    
-    }
-    
-    public void mousePressed(MouseEvent e){
-    
-    
-    }
-    
-    public void mouseClicked(MouseEvent e){
-    
-    
-    }
-    
     public void stateChanged(ChangeEvent e){
         if(e.getSource() == volumeSlider){
             //System.out.println("skfaksdfhk");

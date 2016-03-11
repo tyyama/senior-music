@@ -38,7 +38,7 @@ public class MusicPlayer {
         }
         curSong = newSong;
         System.out.println("Now playing: " + curSong);
-        Media hit = new Media("file:///" + encode(curSong.filePath));//.replace(" ", "%20").replace("\\", "/"));
+        Media hit = new Media("file:///" + encode(curSong.filePath));
         generateQueue();
 
         mediaPlayer = new MediaPlayer(hit);

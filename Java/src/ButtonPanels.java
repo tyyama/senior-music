@@ -1,9 +1,11 @@
 import javafx.embed.swing.JFXPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.event.*; 
+import javax.swing.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 /**
  * Write a description of class ButtonPanels here.
@@ -17,8 +19,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     private static int VOLUME_RES;
 
     // instance variables - replace the example below with your own
-    private JButton play, stop, pause, prev, next;
-    private JList<Song> songList;
+    private JButton play, stop, pause, prev, next, playImage;
     private JSlider progress;
     private ProgressUpdate progressUpdate;
     private VolumeSlider volume;
@@ -46,6 +47,9 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         volume.addChangeListener(this);
         VOLUME_RES = volume.getResolution();
 
+        playImage = generateImageButton("images/play-test.png");
+        playImage.addActionListener(this);
+
         play=new JButton("Play Selected Song");
         pause=new JButton("Pause");
         stop=new JButton("Stop");
@@ -68,7 +72,8 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
         progressUpdate.start();
 
-        add(play);
+        //add(play);
+        add(playImage);
         add(pause);
         add(stop);
         add(prev);
@@ -80,11 +85,15 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     }
     
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==play){
+        if(e.getSource()==play || e.getSource() == playImage){
             System.out.println("I clicked play");
-            Song curSong = musicList.getSelectedValue();
-            player.play(curSong);
-            playing = true;
+            try {
+                Song curSong = musicList.getSelectedValue();
+                player.play(curSong);
+                playing = true;
+            } catch (NullPointerException error) {
+                System.out.println("No song selected");
+            }
             /*JFileChooser chooser = new JFileChooser();
             int dialogBox=chooser.showOpenDialog(null);
             if(dialogBox==JFileChooser.APPROVE_OPTION){
@@ -106,6 +115,8 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
             player.playPrev();
         } else if (e.getSource() == next) {
             player.playNext();
+        } else if (e.getSource() == playImage) {
+            System.out.println("TEST TEST TEST");
         }
     
     }
@@ -157,7 +168,7 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
                 progress.setEnabled(true);
             } else if (status.equals("STOPPED")) {
                 playing = false;
-                pause.setText("Play");
+                pause.setText("Pause");
                 pause.setEnabled(false);
                 stop.setEnabled(false);
                 prev.setEnabled(false);
@@ -171,5 +182,28 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
         }
     }
 
+    private JButton generateImageButton(String imagePath) {
+        JButton button = new JButton();
+        try {
+            //Image img = ImageIO.read(getClass().getResource(imagePath));
+            File imgFile = new File(imagePath);
 
+            if(imgFile.exists())
+                System.out.println("Image file found!");
+            else
+                System.out.println("Image file not found!");
+
+            Image img = ImageIO.read(imgFile);
+            button.setIcon(new ImageIcon(img));
+            // to remote the spacing between the image and button's borders
+            button.setMargin(new Insets(0, 0, 0, 0));
+            // to add a different background
+            //button.setBackground();
+            // to remove the border
+            button.setBorder(null);
+        } catch (IOException ex) {
+        }
+
+        return button;
+    }
 }
