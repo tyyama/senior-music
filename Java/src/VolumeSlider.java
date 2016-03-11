@@ -1,7 +1,4 @@
-import javafx.scene.control.TextFormatter;
-
 import javax.swing.*;
-import java.awt.event.*;
 import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -13,6 +10,7 @@ import javax.swing.event.ChangeListener;
  */
 public class VolumeSlider extends JPanel implements ChangeListener
 {
+    private static int STARTING_VOLUME = 10;
     // instance variables - replace the example below with your own
     private JSlider volumeSlider;
     private JLabel volume;
@@ -23,9 +21,9 @@ public class VolumeSlider extends JPanel implements ChangeListener
      */
     public VolumeSlider()
     {
-        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 100, 50);
+        volumeSlider=new JSlider(JSlider.VERTICAL, 0, 100, STARTING_VOLUME);
         volumeSlider.addChangeListener(this);
-        volume=new JLabel("50");
+        volume=new JLabel(Integer.toString(STARTING_VOLUME));
         add(volumeSlider);
         add(volume);
         
@@ -34,8 +32,8 @@ public class VolumeSlider extends JPanel implements ChangeListener
     
     public void stateChanged(ChangeEvent e){
         if(e.getSource() == volumeSlider){
-            //System.out.println("skfaksdfhk");
             volume.setText(Integer.toString(volumeSlider.getValue()));
+
             for (ChangeListener listener : listeners) {
                 listener.stateChanged(new ChangeEvent(this));
             }

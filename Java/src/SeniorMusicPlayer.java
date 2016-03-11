@@ -20,7 +20,7 @@ public class SeniorMusicPlayer
         JFrame win=new JFrame("Music Player For Senior Citizens");
         win.setSize(900,700);
         win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        MusicList musicList = new MusicList(800, 600);
+        MusicList musicList = new MusicList(800, 550);
         VolumeSlider vSlider = new VolumeSlider();
 
         ButtonPanels buttons=new ButtonPanels(musicList, vSlider);

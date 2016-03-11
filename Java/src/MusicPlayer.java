@@ -12,12 +12,13 @@ import javax.swing.event.ChangeListener;
 public class MusicPlayer {
     private ArrayList<Song> songs = new ArrayList<Song>();
     private ArrayList<String> filePaths = new ArrayList<String>();
-    private Deque<Song> nextMusic = new LinkedList<Song>();
-    private Stack<Song> prevMusic = new Stack<Song>();
+    private LinkedList<Song> nextMusic = new LinkedList<Song>();
+    private LinkedList<Song> prevMusic = new LinkedList<Song>();
     private Song curSong;
     private MediaPlayer mediaPlayer;
     private FileParser fp;
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private boolean shuffle = false;
 
     public MusicPlayer() {
         fp = new FileParser();
@@ -39,7 +40,6 @@ public class MusicPlayer {
         curSong = newSong;
         System.out.println("Now playing: " + curSong);
         Media hit = new Media("file:///" + encode(curSong.filePath));
-        generateQueue();
 
         mediaPlayer = new MediaPlayer(hit);
 
@@ -104,9 +104,6 @@ public class MusicPlayer {
         if (mediaPlayer != null) {
             float thisDuration = curSong.duration.getSeconds();
             float curTime = (float) mediaPlayer.getCurrentTime().toSeconds();
-            /*System.out.println("This Duration: " + thisDuration);
-            System.out.println("Current Time: " + curTime);
-            System.out.println("Percentage: " + (curTime / thisDuration));*/
             return curTime / thisDuration;
         }
 
@@ -114,11 +111,27 @@ public class MusicPlayer {
     }
 
     public void playPrev() {
-
+        nextMusic.addFirst(curSong);
+        if (prevMusic.peekLast() != null) {
+            curSong = prevMusic.removeLast();
+            play(curSong);
+        } else {
+            Random rand = new Random();
+            int randIndex = rand.nextInt(songs.size());
+            curSong = songs.get(randIndex);
+            play(curSong);
+        }
     }
 
     public void playNext() {
+        prevMusic.addLast(curSong);
 
+        if (nextMusic.size() == 0) {
+            generateQueue();
+        }
+
+        curSong = getPrevSong();
+        play(curSong);
     }
 
     public void addMusicFolder(String folder) throws IOException {
@@ -141,6 +154,10 @@ public class MusicPlayer {
         Collections.sort(songs);
         Song[] songArray = new Song[songs.size()];
         return songs.toArray(songArray);
+    }
+
+    public Song getCurrentSong() {
+        return curSong;
     }
 
     public void setVolume(double volume) {
@@ -179,6 +196,10 @@ public class MusicPlayer {
         return null;
     }
 
+    public void setShuffle(boolean shuffle) {
+        this.shuffle = shuffle;
+    }
+
     private void generateQueue() {
         int startingIndex = songs.indexOf(curSong) + 1;
         if (startingIndex >= songs.size()) {
@@ -187,7 +208,26 @@ public class MusicPlayer {
         nextMusic.clear();
         ListIterator<Song> it = songs.listIterator(startingIndex);
         while (it.hasNext()) {
-            nextMusic.addFirst(it.next());
+            nextMusic.addLast(it.next());
+        }
+    }
+
+    private Song getPrevSong() {
+        if (prevMusic.peekLast() != null) {
+            return prevMusic.removeLast();
+        } else {
+            if (shuffle) {
+                Random rand = new Random();
+                int randIndex = rand.nextInt(songs.size());
+                return songs.get(randIndex);
+            } else {
+                int curIndex = songs.indexOf(curSong);
+                if (curIndex == 0) {
+                    return songs.get(songs.size() - 1);
+                } else {
+                    return songs.get(curIndex - 1);
+                }
+            }
         }
     }
 }
