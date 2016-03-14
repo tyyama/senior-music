@@ -18,7 +18,6 @@ public class MusicList extends JPanel {
 
     private static final Insets listInsets = new Insets(0, 0, 0, 0);
 
-    private JList<Song> songList;
     private SongTable songTable;
     private MusicPlayer player;
     private JLabel searchLabel;
@@ -80,7 +79,11 @@ public class MusicList extends JPanel {
 
     // returns the selected song
     public Song getSelectedValue() {
-        return songList.getSelectedValue();
+        return songTable.getSelectedValue();
+    }
+
+    public ArrayList<Song> getVisibleMusic() {
+        return songTable.getVisibleMusic();
     }
 
     // adds a MusicPlayer so that MusicList can play a double-clicked song
@@ -112,6 +115,8 @@ public class MusicList extends JPanel {
 
             updateSongList(matchedSongs);
         }
+
+        player.generateQueue();
     }
 
     // highlights the selected song

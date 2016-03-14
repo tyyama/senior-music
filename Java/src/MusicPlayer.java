@@ -303,23 +303,29 @@ public class MusicPlayer {
         nextMusic.clear();
 
         // generate a shuffled list
+        ArrayList<Song> currentSongList = musicList.getVisibleMusic();
         if (shuffle) {
             Random rand = new Random();
             for (int i = 0; i < 10; i++) {
-                int randIndex = rand.nextInt(songs.size());
-                nextMusic.addFirst(songs.get(randIndex));
+                int randIndex = rand.nextInt(currentSongList.size());
+                Song toAdd = currentSongList.get(randIndex);
+                if (toAdd != curSong)
+                    nextMusic.addFirst(currentSongList.get(randIndex));
             }
         } else { // generate an "in-order" list
-            int startingIndex = songs.indexOf(curSong) + 1;
-            if (startingIndex >= songs.size()) {
-                startingIndex = 0;
+            int startingIndex = 0;
+            if (currentSongList.contains(curSong)) {
+                startingIndex = currentSongList.indexOf(curSong) + 1;
+                if (startingIndex >= currentSongList.size()) {
+                    startingIndex = 0;
+                }
             }
 
-            ListIterator<Song> it = songs.listIterator(startingIndex);
+            ListIterator<Song> it = currentSongList.listIterator(startingIndex);
 
-            int size = songs.size();
+            int size = currentSongList.size();
             for (int i = startingIndex; i < startingIndex + 10; i++) {
-                nextMusic.addLast(songs.get(i % size));
+                nextMusic.addLast(currentSongList.get(i % size));
             }
         }
     }

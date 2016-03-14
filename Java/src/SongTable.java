@@ -17,7 +17,7 @@ public class SongTable extends JPanel {
     private static final Insets insets = new Insets(0, 0, 0, 0);
     private JTable infoTable;
     private SongTableModel model;
-    //private ArrayList<Song> songs;
+    private ArrayList<Song> songs;
     private MusicPlayer player;
 
     public SongTable() {
@@ -78,6 +78,7 @@ public class SongTable extends JPanel {
 
     public void updateSongList(ArrayList<Song> newSongs) {
         Collections.sort(newSongs);
+        songs = newSongs;
         int rows = model.getRowCount();
         for(int i = rows - 1; i >= 0; i--) {
             model.removeRow(i);
@@ -94,12 +95,15 @@ public class SongTable extends JPanel {
         int rows = model.getRowCount();
         for(int i = 0; i < rows; i++) {
             Song thisSong = (Song) model.getValueAt(i, 3);
-            System.out.println(i);
             if (thisSong == song) {
                 infoTable.setRowSelectionInterval(i, i);
                 return;
             }
         }
+    }
+
+    public ArrayList<Song> getVisibleMusic() {
+        return songs;
     }
 
     public void addPlayer(MusicPlayer player) {
