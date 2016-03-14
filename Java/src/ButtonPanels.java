@@ -14,120 +14,109 @@ import java.io.*;
  */
 public class ButtonPanels extends JPanel implements ActionListener, MouseListener, ChangeListener 
 {
-    private static int PROGRESS_RES = 1000000;
-    private static int VOLUME_RES;
+    private static final int BORDER_SIZE = 10;
+    private static final Insets insets = new Insets(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE);
 
-    // instance variables - replace the example below with your own
-    private JButton play, stop, pause, prev, next;
+    private JButton chooseMusic, shuffle;
     private JButton playPauseImage, prevImage, nextImage;
-    private JSlider progress;
-    private ProgressUpdate progressUpdate;
     private VolumeSlider volume;
-    private JLabel progressLabel;
+    private ProgressBar progressBar;
+    private InfoPanel infoPanel;
     private MusicPlayer player;
-    private FileParser fp;
     private MusicList musicList;
     private boolean playing = false;
-    private boolean slidingProgress = false;
 
     /**
      * Constructor for objects of class ButtonPanels
      */
-    public ButtonPanels(MusicList musicList, VolumeSlider volume, Color BGColor) throws IOException
-    {
-        new JFXPanel();
-
+    public ButtonPanels(MusicList musicList, InfoPanel infoPanel, VolumeSlider volume, ProgressBar progressBar, Color BGColor) {
+        // initializes the panel
         setBackground(BGColor);
+        setLayout(new GridBagLayout());
 
+        // creats a new MusicPlayer
         player = new MusicPlayer();
-        fp = new FileParser();
-        player.addMusicFolder("Sample Music");
+
+        // saves the given MusicList object and links it to the player
         this.musicList = musicList;
         musicList.addPlayer(player);
-        this.musicList.setSongs(player.getSongs());
+        this.musicList.updateSongList(player.getSongs());
 
+        // links the player to the MusicList
+        player.setMusicList(musicList);
+
+        // saves the InfoPanel
+        this.infoPanel = infoPanel;
+
+        // saves the VolumeSlider and adds a ChangeListener
         this.volume = volume;
         volume.addChangeListener(this);
-        VOLUME_RES = volume.getResolution();
 
-        playPauseImage = generateImageButton("images/play-test.png");
+        // saves the ProgressBar and links it to the MusicPlayer
+        this.progressBar = progressBar;
+        progressBar.addMusicPlayer(player);
+
+        // creates Buttons with custom images to control MusicPlayer and adds ActionListeners
+        chooseMusic = generateImageButton("Choose");
+        chooseMusic.addActionListener(this);
+
+        shuffle = generateImageButton("Shuffle");
+        shuffle.addActionListener(this);
+
+        playPauseImage = generateImageButton("Play");
         playPauseImage.addActionListener(this);
 
-        prevImage = generateImageButton("images/prev-test.png");
+        prevImage = generateImageButton("Previous");
         prevImage.addActionListener(this);
 
-        nextImage = generateImageButton("images/next-test.png");
+        nextImage = generateImageButton("Next");
         nextImage.addActionListener(this);
 
-        /*play=new JButton("Play Selected Song");
-        pause=new JButton("Pause");
-        stop=new JButton("Stop");
-        prev = new JButton("Previous");
-        next = new JButton("Next");
-        play.addActionListener(this);
-        pause.addActionListener(this);
-        stop.addActionListener(this);
-        prev.addActionListener(this);
-        next.addActionListener(this);
+        // adds the buttons to the panel
+        addComponent(this, prevImage, 0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(this, playPauseImage, 1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(this, nextImage, 2, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(this, chooseMusic, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+        addComponent(this, shuffle, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 
-        prev.setEnabled(false);
-        next.setEnabled(false);*/
-
-        progress=new JSlider(JSlider.HORIZONTAL, 0, PROGRESS_RES, 0);
-        progress.setEnabled(false);
-        progress.addChangeListener(this);
-        progress.addMouseListener(this);
-        progress.setBackground(BGColor);
-
-        progressLabel= new JLabel("Progress");
-        progressLabel.setForeground(Color.getHSBColor(0, 0, .95f));
-
-        progressUpdate = new ProgressUpdate(progress, player, PROGRESS_RES, progressLabel);
-        progressUpdate.start();
-
-        //add(play);
-        //add(prev);
-        add(prevImage);
-        add(playPauseImage);
-        add(nextImage);
-        //add(pause);
-        //add(stop);
-        //add(next);
-        add(progress);
-        add(progressLabel);
-
+        // adds a ChangeListener for when the MusicPlayer's status changes
         player.addChangeListener(this);
     }
-    
+
+    // runs whenever a button is clicked
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==play){
-            System.out.println("I clicked play");
-            try {
-                Song curSong = musicList.getSelectedValue();
-                player.play(curSong);
-            } catch (NullPointerException error) {
-                System.out.println("No song selected");
-            }
-            /*JFileChooser chooser = new JFileChooser();
-            int dialogBox=chooser.showOpenDialog(null);
-            if(dialogBox==JFileChooser.APPROVE_OPTION){
-            File f=chooser.getSelectedFile();
-            player.play(new Song("test.mp3"));*/
-        }
-        else if(e.getSource()==pause || e.getSource() == playPauseImage){
-            System.out.println("I clicked play/pause");
+        if(e.getSource() == playPauseImage){
             if (playing) {
                 player.pause();
             } else {
-                player.play();
+                if (player.getCurrentSong() != null) {
+                    player.play();
+                } else {
+                    player.play(musicList.getSelectedValue());
+                }
             }
-        } else if(e.getSource()==stop){
-            player.stop();
-            
         } else if (e.getSource() == prevImage) {
             player.playPrev();
         } else if (e.getSource() == nextImage) {
             player.playNext();
+        } else if (e.getSource() == chooseMusic) {
+            // opens a JFileChooser for the user to add a music location
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int dialogueBox = chooser.showOpenDialog(null);
+
+            // tells the MusicPlayer to add the chosen folder
+            if (dialogueBox == JFileChooser.APPROVE_OPTION) {
+                String filePath = chooser.getSelectedFile().getAbsolutePath();
+                player.addMusicFolder(filePath);
+            }
+        } else if (e.getSource() == shuffle) {
+            boolean isShuffling = player.changeShuffle();
+            if (isShuffling) {
+                // change to depressed button
+            } else {
+                // change to raised button
+            }
         }
     }
     
@@ -140,15 +129,11 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     }
 
     public void mousePressed(MouseEvent e){
-        if (e.getSource() == progress) {
-            slidingProgress = true;
-        }
+
     }
     
     public void mouseReleased(MouseEvent e){
-        if (e.getSource() == progress) {
-            slidingProgress = false;
-        }
+
     }
     
     public void mouseClicked(MouseEvent e){
@@ -156,92 +141,88 @@ public class ButtonPanels extends JPanel implements ActionListener, MouseListene
     }
 
     public void stateChanged(ChangeEvent e){
+        // runs when player status changes
         if (e.getSource() == player) {
             String status = player.getStatus();
-            progressUpdate.setStatus(status);
-            if (status.equals("PLAYING")) {
-                player.setVolume((double) volume.getValue() / VOLUME_RES);
-                //pause.setText("Pause");
-                //pause.setEnabled(true);
-                //stop.setEnabled(true);
-                //prev.setEnabled(true);
-                //next.setEnabled(true);
-                progress.setEnabled(true);
-                changeButtonImage(playPauseImage, "images/pause-test.png");
-                playing = true;
-            } else if (status.equals("PAUSED")) {
-                //pause.setText("Resume");
-                //pause.setEnabled(true);
-                //stop.setEnabled(true);
-                //prev.setEnabled(true);
-                //next.setEnabled(true);
-                progress.setEnabled(true);
-                playing = false;
-                changeButtonImage(playPauseImage, "images/play-test.png");
-            } else if (status.equals("STOPPED")) {
-                playing = false;
-                //pause.setText("Pause");
-                //pause.setEnabled(false);
-                //stop.setEnabled(false);
-                //prev.setEnabled(false);
-                //next.setEnabled(false);
-                progress.setEnabled(false);
-                changeButtonImage(playPauseImage, "images/play-test.png");
+            if (status != null) {
+                infoPanel.update(player.getCurrentSong());
+                progressBar.setStatus(status);
+                if (status.equals("PLAYING")) {
+                    // sets volume to normalized volume level
+                    player.setVolume((double) volume.getValue() / volume.getResolution());
+                    progressBar.setEnabled(true);
+                    changeButtonImage(playPauseImage, "Pause");
+                    playing = true;
+                } else if (status.equals("PAUSED")) {
+                    progressBar.setEnabled(true);
+                    playing = false;
+                    changeButtonImage(playPauseImage, "Play");
+                } else if (status.equals("STOPPED")) {
+                    playing = false;
+                    progressBar.setEnabled(false);
+                    changeButtonImage(playPauseImage, "Play");
+                }
             }
-        } else if (e.getSource() == progress && slidingProgress) {
-            player.seek((double) progress.getValue() / PROGRESS_RES);
-        } else if (e.getSource() == volume) {
-            player.setVolume((double) volume.getValue() / VOLUME_RES);
+        } else if (e.getSource() == volume) { // runs when volume slider changes
+            // sets volume to normalized volume level
+            player.setVolume((double) volume.getValue() / volume.getResolution());
         }
     }
 
-    private JButton generateImageButton(String imagePath) {
+    // returns a new JButton with an image to click on
+    private JButton generateImageButton(String ButtonName) {
         JButton button = new JButton();
         try {
-            //Image img = ImageIO.read(getClass().getResource(imagePath));
-            File imgFile = new File(imagePath);
+            // look for the given image
+            File fileHover =     new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_Hover.png");
+            File filePressed =   new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_Pressed.png");
+            File fileUnpressed = new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_UnPressed.png");
 
-            if(imgFile.exists())
-                System.out.println("Image file found!");
-            else
-                System.out.println("Image file not found!");
+            Image imgHover =        ImageIO.read(fileHover);
+            Image imgPressed =      ImageIO.read(filePressed);
+            Image imgUnpressed =    ImageIO.read(fileUnpressed);
 
-            Image img = ImageIO.read(imgFile);
-            button.setIcon(new ImageIcon(img));
-            // to remote the spacing between the image and button's borders
+            // customer button with the image
+            button.setIcon(new ImageIcon(imgUnpressed));
+            button.setRolloverIcon(new ImageIcon(imgHover));
+            button.setPressedIcon(new ImageIcon(imgPressed));
+
             button.setMargin(new Insets(0, 0, 0, 0));
             button.setOpaque(false);
             button.setContentAreaFilled(false);
             button.setBorderPainted(false);
-            // to add a different background
-            //button.setBackground();
-            // to remove the border
             button.setBorder(null);
-        } catch (IOException ex) {
+        } catch (IOException ex) { // image wasn't found
+            System.err.println("Image not found!");
         }
 
         return button;
     }
 
-    private void changeButtonImage(JButton button, String imagePath) {
+    // changes the given button's image to the new image
+    private void changeButtonImage(JButton button, String ButtonName) {
         try {
-            //Image img = ImageIO.read(getClass().getResource(imagePath));
-            File imgFile = new File(imagePath);
+            // look for the given image
+            File fileHover =     new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_Hover.png");
+            File filePressed =   new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_Pressed.png");
+            File fileUnpressed = new File("images/" + ButtonName + "Button/CS360_" + ButtonName + "_UnPressed.png");
 
-            if(imgFile.exists())
-                System.out.println("Image file found!");
-            else
-                System.out.println("Image file not found!");
+            Image imgHover =        ImageIO.read(fileHover);
+            Image imgPressed =      ImageIO.read(filePressed);
+            Image imgUnpressed =    ImageIO.read(fileUnpressed);
 
-            Image img = ImageIO.read(imgFile);
-            button.setIcon(new ImageIcon(img));
-            // to remote the spacing between the image and button's borders
-            button.setMargin(new Insets(0, 0, 0, 0));
-            // to add a different background
-            //button.setBackground();
-            // to remove the border
-            button.setBorder(null);
-        } catch (IOException ex) {
+            // customer button with the image
+            button.setIcon(new ImageIcon(imgUnpressed));
+            button.setRolloverIcon(new ImageIcon(imgHover));
+            button.setPressedIcon(new ImageIcon(imgPressed));
+        } catch (IOException ex) { // image wasn't found
+            System.err.println("Image not found!");
         }
+    }
+
+    // adds component
+    private static void addComponent(Container container, Component component, int gridx, int gridy, int gridwidth, int gridheight, double weightx, double weighty, int anchor, int fill) {
+        GridBagConstraints gbc = new GridBagConstraints(gridx, gridy, gridwidth, gridheight, weightx,  weighty, anchor, fill, insets, 0, 0);
+        container.add(component, gbc);
     }
 }

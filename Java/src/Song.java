@@ -3,86 +3,52 @@
  */
 import java.io.*;
 import java.time.Duration;
-
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.io.IOExceptionWithCause;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.mp3.Mp3Parser;
-import org.apache.tika.parser.mp4.MP4Parser;
-import org.gagravarr.tika.FlacParser;
-import org.jdom2.Content;
-import org.xml.sax.*;
-import org.xml.sax.helpers.DefaultHandler;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.audio.AudioHeader;
 
 public class Song implements Comparable<Song> {
-    public String title;
-    public String artist;
-    public String album;
-    public String filePath;
+    public String title = "Not found";
+    public String artist = "Not found";
+    public String album = "Not found";
+    public String filePath = "Not found";
     public String albumArtPath;
-    public String fileType;
     public Duration duration;
 
     public Song(String filePath) throws IOException {
         this.filePath = filePath;
-        if (filePath.endsWith(".mp3")) {
-            fileType = "MP3";
-        } else if (filePath.endsWith(".flac")) {
-            fileType = "FLAC";
-        } else if (filePath.endsWith(".m4a")) {
-            fileType = "M4A";
-        } else {
-            throw new IOException("Unsupported file type");
-        }
     }
 
+    // finds the Song's metadata and updates the fields
     public void findMetadata() {
         try {
-            InputStream input = new FileInputStream(new File(filePath));
-            ContentHandler handler = new DefaultHandler();
-            Metadata metadata = new Metadata();
-            Parser parser;
-            if (fileType.equals("MP3")) {
-                parser = new Mp3Parser();
-            } else if (fileType.equals("M4A")) {
-                parser = new MP4Parser();
-            } else if (fileType.equals("FLAC")) {
-                parser = new FlacParser();
-            } else {
-                parser = new Mp3Parser();
-            }
+            // initialize metadata readers
+            AudioFile f = AudioFileIO.read(new File(filePath));
+            Tag tag = f.getTag();
+            AudioHeader a = f.getAudioHeader();
 
-            ParseContext parseCtx = new ParseContext();
-            parser.parse(input, handler, metadata, parseCtx);
-            input.close();
+            // get info from file and set the corresponding fields
+            duration = Duration.ofSeconds((long) a.getTrackLength());
+            title = tag.getFirst(FieldKey.TITLE);
+            artist = tag.getFirst(FieldKey.ARTIST);
+            album = tag.getFirst(FieldKey.ALBUM);
+            albumArtPath = tag.getFirstArtwork().getImageUrl();
 
-            title = metadata.get("title");
-            artist = metadata.get("xmpDM:artist");
-            album = metadata.get("xmpDM:album");
-            float seconds = Float.parseFloat(metadata.get("xmpDM:duration"));
-            duration = Duration.ofMillis((long) (seconds * 1000));
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (TikaException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Metadata not found for " + filePath);
         }
     }
 
+    // returns the String reprentation of the Song, used for MusicList
     public String toString() {
-        return title + " - " + artist;// + "\t\t" + album;
-        //return "{Title: " + title + ", Artist: " + artist + ", Album: " + album + "}";
+        return title + " - " + artist;
     }
 
+    // compares songs alphabetically by title
     public int compareTo(Song other) {
-        return this.title.compareTo(other.title);
+            return this.title.compareTo(other.title);
     }
 
 }
