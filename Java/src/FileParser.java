@@ -15,7 +15,7 @@ public class FileParser{
     }
 
     private static boolean isAudioFile(String file){																//Check file type
-        return file.endsWith(".flac")||file.endsWith(".mp3")||file.endsWith(".m4a");//||file.endsWith(".wav");
+        return file.endsWith(".mp3")||file.endsWith(".m4a");
     }
 
     public static ArrayList<String> parse(String filePath) {
